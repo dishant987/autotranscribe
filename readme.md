@@ -66,7 +66,7 @@ eduvid-ai/
 
 ## 🛠️ Tech Stack
 
-### Frontend (client1)
+### Frontend (client)
 - **React 19** with TypeScript
 - **Vite** for build tooling
 - **Tailwind CSS** for styling
@@ -274,7 +274,7 @@ Get dashboard statistics.
 
 1. Build the project:
 ```bash
-cd client1
+cd client
 npm run build
 ```
 

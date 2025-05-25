@@ -54,7 +54,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
-      <Toaster />
+      <Toaster position="top-right" />
     </Layout>
   );
 }
