@@ -23,7 +23,7 @@ function parseSRT(filePath: string): {
   let segmentStart = cues[0]?.startTime;
   let lastTime = segmentStart;
 
-  const maxSegmentDuration = 60; // in 5 minutes
+  const maxSegmentDuration = 5 * 60; // in 5 minutes
 
   const timeToSeconds = (time: string) => {
     const [h, m, s] = time.replace(",", ".").split(":").map(parseFloat);

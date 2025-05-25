@@ -36,10 +36,10 @@ router.post(
   upload.single("video"),
   asyncHandler(uploadVideo)
 );
-router.get("/videos", getVideos);
+router.get("/videos", verifyToken, getVideos);
 router.get("/:id", getVideoById);
 router.delete("/:id", deleteVideo);
-router.get("/dashboard/data", showDashboardData);
+router.get("/dashboard/data", verifyToken, showDashboardData);
 router.patch("/:id", verifyToken, updateVideoFilename);
 
 export default router;

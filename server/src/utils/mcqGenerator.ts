@@ -14,20 +14,24 @@ interface LlmResponse {
 }
 
 export const generateMCQs = async (text: string): Promise<string> => {
-  const prompt = `You are an assistant that generates multiple choice questions.
+  const prompt = `You are an AI assistant that generates multiple-choice questions in **valid JSON** format only.
 
-Based on the following lecture segment, generate exactly 3 multiple-choice questions. Return the result as a JSON array, where each object has the following format:
+INSTRUCTIONS:
+- Generate EXACTLY 3 multiple-choice questions based on the lecture segment.
+- Each question object must follow this exact format:
+  {
+    "question": "string",
+    "options": ["A) ...", "B) ...", "C) ..."],
+    "correctAnswer": "B) ..."
+  }
+- "options" must be an array of exactly 3 strings.
+- Do NOT include explanations, markdown, or extra text.
+- Do NOT include trailing commas.
+- Output must be a **valid JSON array** ONLY.
 
-{
-  "question": "string",
-  "options": ["A) ...", "B) ...", "C) ..."],
-  "correctAnswer": "B) ..."
-}
-
-Only respond with valid JSON.
-
-Lecture segment:
-"""${text}"""`;
+LECTURE SEGMENT:
+"""${text}"""
+`;
 
   try {
     const { data } = await axios.post<LlmResponse>(LLM_API_URL, {

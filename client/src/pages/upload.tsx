@@ -92,8 +92,9 @@ export default function UploadPage() {
     setUploadProgress(0);
     setError(null);
 
-    const uploadToast = toast.loading("Upload started", {
-      description: "Your video is being uploaded. Please wait...",
+    const uploadToast = toast.loading("Upload started and processing", {
+      description:
+        "Your video is being uploaded and processed. This might take some time. Please wait...",
     });
 
     axios
@@ -127,6 +128,13 @@ export default function UploadPage() {
         toast.error("Upload failed", {
           description: "There was a problem uploading your video.",
         });
+        setIsUploading(false);
+        toast.dismiss(uploadToast);
+      })
+      .finally(() => {
+        setFile(null);
+        setUploadProgress(0);
+        toast.dismiss(uploadToast);
         setIsUploading(false);
       });
   }, [file, navigate]);

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 interface Video {
   id: string;
@@ -74,10 +75,16 @@ export default function DashboardPage() {
     totalMcqs: 0,
     totalVideos: 0,
   });
+  const {token} = useAuth();
 
   const fetchVideos = async () => {
     try {
-      const response = await axios.get(`${BackendURL}/api/video/videos`);
+      const response = await axios.get(`${BackendURL}/api/video/videos`,{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log("Videos response:", response.data);
       setVideos(response.data);
     } catch (error) {
@@ -88,7 +95,12 @@ export default function DashboardPage() {
   const fetchDashboardData = async () => {
     try {
       const response = await axios.get(
-        `${BackendURL}/api/video/dashboard/data`
+        `${BackendURL}/api/video/dashboard/data`,{
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log("Dashboard data response:", response.data);
       if (response.status === 200) {

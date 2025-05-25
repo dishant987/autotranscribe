@@ -5,6 +5,12 @@ import { generateMCQs } from "../utils/mcqGenerator";
 import VideoModel from "../models/Video";
 import User from "../models/User";
 
+function parseTimeToSeconds(time: string): number {
+  const [hhmmss, ms] = time.split(",");
+  const [hours, minutes, seconds] = hhmmss.split(":").map(Number);
+  return hours * 3600 + minutes * 60 + seconds + Number(ms) / 1000;
+}
+
 export const uploadVideo = async (
   req: Request,
   res: Response
@@ -59,11 +65,13 @@ export const uploadVideo = async (
     });
 
     const segmentsWithMcqs = await Promise.all(mcqPromises);
-
+    const totalDurationSeconds =
+      parseTimeToSeconds(segments[segments.length - 1].endTime) -
+      parseTimeToSeconds(segments[0].startTime);
     const saved = await VideoModel.create({
       userId,
       filename: file.originalname,
-      duration: segments.length * 60,
+      duration: Math.round(totalDurationSeconds),
       segments: segmentsWithMcqs,
     });
 
@@ -83,7 +91,12 @@ export const uploadVideo = async (
 // This function retrieves all videos from the database
 export const getVideos = async (req: Request, res: Response): Promise<void> => {
   try {
-    const videos = await VideoModel.find();
+    const userId = req.userId; // Ensure userId is set from auth middleware
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized: User not found" });
+      return;
+    }
+    const videos = await VideoModel.find({ userId }).sort({ createdAt: -1 });
 
     const formattedVideos = videos.map((video) => {
       const mcqCount = video.segments.reduce((total, segment) => {
@@ -148,13 +161,16 @@ export const deleteVideo = async (
 
 // Function to update video filename
 
-export const updateVideoFilename = async (req: Request, res: Response): Promise<void> => {
+export const updateVideoFilename = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { id } = req.params;
     const { filename } = req.body;
 
     if (!filename || typeof filename !== "string") {
-       res.status(400).json({ error: "Valid filename is required" });
+      res.status(400).json({ error: "Valid filename is required" });
       return;
     }
 
@@ -165,7 +181,7 @@ export const updateVideoFilename = async (req: Request, res: Response): Promise<
     );
 
     if (!updatedVideo) {
-       res.status(404).json({ error: "Video not found" });
+      res.status(404).json({ error: "Video not found" });
       return;
     }
 
@@ -183,7 +199,12 @@ export const showDashboardData = async (
   res: Response
 ): Promise<void> => {
   try {
-    const videos = await VideoModel.find();
+    const userId = req.userId; // Ensure userId is set from auth middleware
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized: User not found" });
+      return;
+    }
+    const videos = await VideoModel.find({ userId });
 
     const totalVideos = videos.length;
     let totalDuration = 0;
