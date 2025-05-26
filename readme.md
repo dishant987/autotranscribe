@@ -2,6 +2,11 @@
 
 Transform your lecture videos into interactive learning experiences with automatic transcription and MCQ generation.
 
+## 📽️ Demo Video
+
+Watch a demo of EduVid AI in action:  
+[▶️ View Demo on Google Drive](https://drive.google.com/file/d/18IYgCc_9wDg34_NDoy31_ofv_91kqwwc/view?usp=drive_link)
+
 ## 🚀 Features
 
 - **Video Upload**: Support for MP4 video files up to 300MB
